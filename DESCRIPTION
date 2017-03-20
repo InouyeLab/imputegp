@@ -1,6 +1,6 @@
 Package: imputegp
 Type: Package
-Title: Impute acute-phase glycoproteins from NMR data in population studies
+Title: Impute GlycA glycoproteins from serum NMR data in population studies
 Version: 0.1.0
 Authors@R: 'Scott Ritchie <sritchie73@gmail.com> [aut, cre]'
 Description: Functions for imputing the concentrations of alpha-1-acid
