@@ -1,3 +1,56 @@
+#' Impute Alpha-1 antitrypsin (A1AT)
+#'
+#' Imputes the concentrations of A1AT from serum NMR measurements in healthy
+#' population-based samples.
+#'
+#' @details
+#'  The imputation models will only return a concentration where no input
+#'  measurements were missing, and where all input measurements were within
+#'  their acceptable predefined range of values. These correspond to their
+#'  range of values in the training dataset. Similarly, the imputed measurement
+#'  will be set to missing if the imputation model returns a concentration
+#'  outside the range of values that were found in the training dataset.
+#'
+#' @param GlycA NMR measurement for glycoprotein acetyls. Measurements should
+#'  be between 0.869--2.24 mmol/L.
+#' @param FAw3 NMR measurement for Omega-3 fatty acids. Measurements should be
+#'  between 0.196--1.18 mmol/L.
+#' @param VLDL.D NMR measurement for the mean diameter of VLDL particles.
+#'  Measurements should be between 33--41 nm.
+#' @param HDL3.C NMR measurement for cholesterol in the HDL-3 fraction.
+#'  Measurements should be between 0.421--0.647 mmol/L.
+#' @param LDL.D NMR measurement for the mean diameter of LDL particles.
+#'  Measurements should be between 23.2--24.1 nm.
+#' @param Phe NMR measurement for phenylalanine. Measurements should be between
+#'  0.0555--0.118 mmol/L.
+#' @param Leu NMR measurement for leucine. Measurements should be between
+#'  0.0295--0.138 mmol/L.
+#' @param ApoB NMR measurement for Apolipoprotein B. Measurements should be
+#'  between 0.365--1.48 g/L.
+#' @param Alb NMR measurement for albumin. Measurements should have a signal
+#'  area ranging between 0.0733--0.101.
+#' @param Tyr NMR measurement for tyrosine. Measurements should be between
+#'  0.0279--0.124 mmol/L.
+#' @param bOHBut NMR measurement for 3-hydroxybutyrate. Measurements should be
+#'  between 0.0331--0.872 mmol/L.
+#' @param BMI Body Mass Index. Measurements should be between 16.17--47.44
+#'  kg/m^2.
+#' @param Ala NMR measurement for alanine. Measurements should be between
+#'  0.274--0.557 mmol/L.
+#' @param L.HDL.TG NMR measurement for triglycerides within large HDL
+#'  particles. Measurements should be between 0.000462--0.0933 mmol/L.
+#' @param Ile NMR measurement for isoleucine. Measurements should be between
+#'  0.024--0.103 mmol/L.
+#' @param Ace NMR measurement for acetate. Measurements should be between
+#'  0.029--1.32 mmol/L.
+#' @param His NMR measurement for histidine. Measurements should be between
+#'  0.0446--0.0913 mmol/L.
+#' @param HDL.TG NMR measurement for triglycerides within all HDL particles.
+#'  Measurements should be between 0.0698--0.315 mmol/L.
+#'
+#' @return A vector of A1AT measurements ranging between 0.64--2.58 mg/L.
+#'
+#' @export
 impute_A1AT <- function(
   GlycA, FAw3, VLDL.D, HDL3.C, LDL.D, Phe, Leu, ApoB, Alb, Tyr, bOHBut, BMI,
   Ala, L.HDL.TG, Ile, Ace, His, HDL.TG
@@ -37,6 +90,70 @@ impute_A1AT <- function(
   return(A1AT)
 }
 
+#' Impute Alpha-1-acid glcyoprotein (AGP)
+#'
+#' Imputes the concentrations of AGP from serum NMR measurements in healthy
+#' population-based samples.
+#'
+#' @details
+#'  The imputation models will only return a concentration where no input
+#'  measurements were missing, and where all input measurements were within
+#'  their acceptable predefined range of values. These correspond to their
+#'  range of values in the training dataset. Similarly, the imputed measurement
+#'  will be set to missing if the imputation model returns a concentration
+#'  outside the range of values that were found in the training dataset.
+#'
+#' @param GlycA NMR measurement for glycoprotein acetyls. Measurements should
+#'  be between 0.869--2.24 mmol/L.
+#' @param TotFA NMR measurement for total fatty acids. Measurements should be
+#'  between 5.58--17.1 mmol/L
+#' @param IDL.FC NMR measurement for free cholesterol within IDL particles.
+#'  Measurements should be between 0.0515--0.368 mmol/L.
+#' @param L.HDL.FC NMR measurement for free cholesterol within large HDL
+#'  particles. Measurements should be between 0.00134--0.208 mmol/L.
+#' @param His NMR measurement for histidine. Measurements should be between
+#'  0.0446--0.0913 mmol/L.
+#' @param HDL.TG NMR measurement for triglycerides within all HDL particles.
+#'  Measurements should be between 0.0698--0.315 mmol/L.
+#' @param BMI Body Mass Index. Measurements should be between 16.17--47.44
+#'  kg/m^2.
+#' @param S.HDL.FC NMR measurement for free cholesterol within small HDL
+#'  particles. Measurements should be between 0.0674--0.168 mmol/L.
+#' @param S.LDL.TG NMR measurement for triglycerides within small LDL
+#'  particles. Measurements should be between 0.00478--0.076 mmol/L.
+#' @param bOHBut NMR measurement for 3-hydroxybutyrate. Measurements should be
+#'  between 0.0331--0.872 mmol/L.
+#' @param LA NMR measurement for 18:2 linoleic acid. Measurements should be
+#'  between 0.449--5.15 mmol/L.
+#' @param S.HDL.CE NMR measurement for cholesterol esters in small HDL
+#'  particles. Measurements should be between 0.061--0.466 mmol/L.
+#' @param Lac NMR measurement for lactate. Measurements should be between
+#'  0.69--4.93 mmol/L.
+#' @param S.VLDL.TG NMR measurement for triglycerides within small VLDL
+#'  particles. Measurements should be between 0.0135--0.76 mmol/L.
+#' @param Ace NMR measurement for acetate. Measurements should be between
+#'  0.029--1.32 mmol/L.
+#' @param Cit NMR measurement for citrate. Measurements should be between
+#'  0.0739--0.186 mmol/L.
+#' @param SFA NMR measurement for saturated fatty acids. Measurements should
+#'  be between 2.07--7.02 mmol/L.
+#' @param Ala NMR measurement for alanine. Measurements should be between
+#'  0.274--0.557 mmol/L.
+#' @param XXL.VLDL.CE NMR measurement for cholesterol esters within extremely
+#'  large VLDL particles. Measurements should be between 0.000000133--0.0169
+#'  mmol/L.
+#' @param Glol NMR measurement for glycerol. Measurements should be between
+#'  0.0415--0.312 mmol/L.
+#' @param Age The study participant's age in years. Measurements should be
+#'  between 25--74 years old.
+#' @param Crea NMR measurement for creatinine. Measurements should be between
+#'  0.0182--0.347 mmol/L.
+#' @param Gly NMR measurement for glycine. Measurements should be between
+#'  0.182--0.632 mmol/L.
+#'
+#' @return A vector of AGP measurements ranging between 362--1,880 mg/L.
+#'
+#' @export
 impute_AGP <- function(
   GlycA, TotFA, IDL.FC, L.HDL.FC, His, HDL.TG, BMI, S.HDL.FC, S.LDL.TG, bOHBut,
   LA, S.HDL.CE, Lac, S.VLDL.TG, Ace, Cit, SFA, Ala, XXL.VLDL.CE, Glol, Age,
@@ -84,6 +201,77 @@ impute_AGP <- function(
   return(AGP)
 }
 
+#' Impute Haptoglobin (HP)
+#'
+#' Imputes the concentrations ofHP from serum NMR measurements in healthy
+#' population-based samples.
+#'
+#' @details
+#'  The imputation models will only return a concentration where no input
+#'  measurements were missing, and where all input measurements were within
+#'  their acceptable predefined range of values. These correspond to their
+#'  range of values in the training dataset. Similarly, the imputed measurement
+#'  will be set to missing if the imputation model returns a concentration
+#'  outside the range of values that were found in the training dataset.
+#'
+#' @param GlycA NMR measurement for glycoprotein acetyls. Measurements should
+#'  be between 0.869--2.24 mmol/L.
+#' @param LA NMR measurement for 18:2 linoleic acid. Measurements should be
+#'  between 0.449--5.15 mmol/L.
+#' @param IDL.FC NMR measurement for free cholesterol within IDL particles.
+#'  Measurements should be between 0.0515--0.368 mmol/L.
+#' @param SM NMR measurement for sphingomyelins. Measurements should be between
+#'  0.103--0.733 mmol/L.
+#' @param FAw3 NMR measurement for Omega-3 fatty acids. Measurements should be
+#'  between 0.196--1.18 mmol/L.
+#' @param HDL.TG NMR measurement for triglycerides within all HDL particles.
+#'  Measurements should be between 0.0698--0.315 mmol/L.
+#' @param S.VLDL.CE NMR measurement for cholesterol esters within small VLDL
+#'  particles. Measurements should be between 0.000221--0.288 mmol/L.
+#' @param Age The study participant's age in years. Measurements should be
+#'  between 25--74 years old.
+#' @param Alb NMR measurement for albumin. Measurements should have a signal
+#'  area ranging between 0.0733--0.101.
+#' @param Ile NMR measurement for isoleucine. Measurements should be between
+#'  0.024--0.103 mmol/L.
+#' @param Cit NMR measurement for citrate. Measurements should be between
+#'  0.0739--0.186 mmol/L.
+#' @param VLDL.D NMR measurement for the mean diameter of VLDL particles.
+#'  Measurements should be between 33--41 nm.
+#' @param Leu NMR measurement for leucine. Measurements should be between
+#'  0.0295--0.138 mmol/L.
+#' @param Val NMR measurement for valine. Measurements should be between
+#'  0.0728--0.297 mmol/L.
+#' @param L.VLDL.CE NMR measurement for cholesterol esters within large VLDL
+#'  particles. Measurements should be between 0.00000152--0.161 mmol/L.
+#' @param Pyr NMR measurement for pyruvate. Measurements should be between
+#'  0.0512--0.179 mmol/L.
+#' @param Lac NMR measurement for lactate. Measurements should be between
+#'  0.69--4.93 mmol/L.
+#' @param Gln NMR measurement for glutamine. Measurements should be between
+#'  0.331--1.36 mmol/L.
+#' @param M.HDL.FC NMR measurement for free cholesterol within medium HDL
+#'  particles. Measurements should be between 0.0208--0.145 mmol/L.
+#' @param XL.HDL.TG NMR measurement for triglycerides within very large HDL
+#'  particles. Measurements should be between 0.000287--0.055 mmol/L.
+#' @param XL.HDL.PL NMR measurement for phospholipids within very large HDL
+#'  particles. Measurements should be between 0.00176--0.639 mmol/L.
+#' @param His NMR measurement for histidine. Measurements should be between
+#'  0.0446--0.0913 mmol/L.
+#' @param Tyr NMR measurement for tyrosine. Measurements should be between
+#'  0.0279--0.124 mmol/L.
+#' @param BMI Body Mass Index. Measurements should be between 16.17--47.44
+#'  kg/m^2.
+#' @param L.HDL.TG NMR measurement for triglycerides within large HDL
+#'  particles. Measurements should be between 0.000462--0.0993 mmol/L.
+#' @param PUFA NMR measurement for polyunsaturated fatty acids. Measurements
+#'  should be between 2.29--6.62 mmol/L.
+#' @param S.LDL.FC NMR measurement for free cholesterol within small LDL
+#'  particles. Measurements should be between 0.0215--0.133 mmol/L.
+#'
+#' @return A vector of HP measurements ranging between 0.14--3.95 mg/L.
+#'
+#' @export
 impute_HP <- function(
   GlycA, LA, IDL.FC, SM, FAw3, HDL.TG, S.VLDL.CE, Age, Alb, Ile, Cit, VLDL.D,
   Leu, Val, L.VLDL.CE, Pyr, Lac, Gln, M.HDL.FC, XL.HDL.TG, XL.HDL.PL, His, Tyr,
@@ -135,6 +323,41 @@ impute_HP <- function(
   return(HP)
 }
 
+#' Impute Transferrin (TF)
+#'
+#' Imputes the concentrations of AGP from serum NMR measurements in healthy
+#' population-based samples.
+#'
+#' @details
+#'  The imputation models will only return a concentration where no input
+#'  measurements were missing, and where all input measurements were within
+#'  their acceptable predefined range of values. These correspond to their
+#'  range of values in the training dataset. Similarly, the imputed measurement
+#'  will be set to missing if the imputation model returns a concentration
+#'  outside the range of values that were found in the training dataset.
+#'
+#' @param GlycA NMR measurement for glycoprotein acetyls. Measurements should
+#'  be between 0.869--2.24 mmol/L.
+#' @param Sex The study participant's sex. The coding should be 1 for males, 2 for
+#'  females.
+#' @param Age The study participant's age in years. Measurements should be
+#'  between 25--74 years old.
+#' @param S.HDL.FC NMR measurement for free cholesterol within small HDL
+#'  particles. Measurements should be between 0.0674--0.168 mmol/L.
+#' @param Ace NMR measurement for acetate. Measurements should be between
+#'  0.029--1.32 mmol/L.
+#' @param Ala NMR measurement for alanine. Measurements should be between
+#'  0.274--0.557 mmol/L.
+#' @param SFA NMR measurement for saturated fatty acids. Measurements should
+#'  be between 2.07--7.02 mmol/L.
+#' @param His NMR measurement for histidine. Measurements should be between
+#'  0.0446--0.0913 mmol/L.
+#' @param Gln NMR measurement for glutamine. Measurements should be between
+#'  0.331--1.36 mmol/L.
+#'
+#' @return A vector of TF measurements ranging between 1.39--4.38 mg/L.
+#'
+#' @export
 impute_TF <- function(GlycA, Sex, Age, S.HDL.FC, Ace, Ala, SFA, His, Gln) {
   # Model in the paper (coefficients rounded):
   # TF = 1.1 + 0.14 GlycA + 0.032 Sex − 0.0010 Age + 0.090 S-HDL-FC − 0.037 Ace
