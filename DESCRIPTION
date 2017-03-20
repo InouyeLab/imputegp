@@ -1,0 +1,13 @@
+Package: imputegp
+Type: Package
+Title: Impute acute-phase glycoproteins from NMR data in population studies
+Version: 0.1.0
+Authors@R: 'Scott Ritchie <sritchie73@gmail.com> [aut, cre]'
+Description: Functions for imputing the concentrations of alpha-1-acid
+    glycoprotein, haptoglobin, alpha-1 antitrypsin, and transferrin from
+    serum Nuclear Magnetic Resonance spectroscopy data in healthy population
+    cohorts.
+Depends:
+  R (>= 2.10)
+License: GPL-2
+RoxygenNote: 5.0.1
