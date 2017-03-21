@@ -82,6 +82,8 @@ impute_A1AT <- function(
   # values observed in the model training data.
   A1AT <- check_range(A1AT, "A1AT")
 
+  message("Successfully imputed A1AT for ", sum(!is.na(A1AT)), " samples")
+
   return(A1AT)
 }
 
@@ -185,6 +187,8 @@ impute_AGP <- function(
   # Remove imputed concentrations that are outside the range of concentration
   # values observed in the model training data.
   AGP <- check_range(AGP, "AGP")
+
+  message("Successfully imputed AGP for ", sum(!is.na(AGP)), " samples")
 
   return(AGP)
 }
@@ -301,6 +305,8 @@ impute_HP <- function(
   # values observed in the model training data.
   HP <- check_range(HP, "HP")
 
+  message("Successfully imputed HP for ", sum(!is.na(HP)), " samples")
+
   return(HP)
 }
 
@@ -357,6 +363,8 @@ impute_TF <- function(GlycA, Sex, Age, S.HDL.FC, Ace, Ala, SFA, His, Gln) {
   # Remove imputed concentrations that are outside the range of concentration
   # values observed in the model training data.
   TF <- check_range(TF, "TF")
+
+  message("Successfully imputed TF for ", sum(!is.na(TF)), " samples")
 
   return(TF)
 }
