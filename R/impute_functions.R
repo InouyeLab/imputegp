@@ -344,8 +344,8 @@ impute_HP <- function(
 #'
 #' @return A vector of TF measurements ranging between 1.39--4.38 mg/L.
 #'
-#' @export
 impute_TF <- function(GlycA, Sex, Age, S.HDL.FC, Ace, Ala, SFA, His, Gln) {
+
   log_TF <- TF_coef["intercept"] +
     TF_coef["GlycA"] * log(check_range(GlycA, "GlycA")) +
     TF_coef["Sex"] * check_range(Sex, "Sex") +
@@ -365,6 +365,6 @@ impute_TF <- function(GlycA, Sex, Age, S.HDL.FC, Ace, Ala, SFA, His, Gln) {
   TF <- check_range(TF, "TF")
 
   message("Successfully imputed TF for ", sum(!is.na(TF)), " samples")
-
+  warning("The concentrations predicted by this function are unlikely to reflect true TF levels")
   return(TF)
 }
