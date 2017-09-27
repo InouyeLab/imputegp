@@ -1,6 +1,6 @@
-#' Impute Alpha-1 antitrypsin (A1AT)
+#' Impute Alpha-1 antitrypsin (AAT)
 #'
-#' Imputes the concentrations of A1AT from serum NMR measurements in healthy
+#' Imputes the concentrations of AAT from serum NMR measurements in healthy
 #' population-based samples.
 #'
 #' @details
@@ -48,43 +48,43 @@
 #' @param HDL.TG NMR measurement for triglycerides within all HDL particles.
 #'  Measurements should be between 0.0698--0.315 mmol/L.
 #'
-#' @return A vector of A1AT measurements ranging between 0.64--2.58 mg/L.
+#' @return A vector of AAT measurements ranging between 0.64--2.58 mg/L.
 #'
 #' @export
-impute_A1AT <- function(
+impute_AAT <- function(
   GlycA, FAw3, VLDL.D, HDL3.C, LDL.D, Phe, Leu, ApoB, Alb, Tyr, bOHBut, BMI,
   Ala, L.HDL.TG, Ile, Ace, His, HDL.TG
 ) {
-  log_A1AT <- A1AT_coef["intercept"] +
-    A1AT_coef["GlycA"] * log(check_range(GlycA, "GlycA")) +
-    A1AT_coef["FAw3"] * log(check_range(FAw3, "FAw3")) +
-    A1AT_coef["VLDL.D"] * log(check_range(VLDL.D, "VLDL.D")) +
-    A1AT_coef["HDL3.C"] * log(check_range(HDL3.C, "HDL3.C")) +
-    A1AT_coef["LDL.D"] * log(check_range(LDL.D, "LDL.D")) +
-    A1AT_coef["Phe"] * log(check_range(Phe, "Phe")) +
-    A1AT_coef["Leu"] * log(check_range(Leu, "Leu")) +
-    A1AT_coef["ApoB"] * log(check_range(ApoB, "ApoB")) +
-    A1AT_coef["Alb"] * log(check_range(Alb, "Alb")) +
-    A1AT_coef["Tyr"] * log(check_range(Tyr, "Tyr")) +
-    A1AT_coef["bOHBut"] * log(check_range(bOHBut, "bOHBut")) +
-    A1AT_coef["BMI"] * log(check_range(BMI, "BMI")) +
-    A1AT_coef["Ala"] * log(check_range(Ala, "Ala")) +
-    A1AT_coef["L.HDL.TG"] * log(check_range(L.HDL.TG, "L.HDL.TG")) +
-    A1AT_coef["Ile"] * log(check_range(Ile, "Ile")) +
-    A1AT_coef["Ace"] * log(check_range(Ace, "Ace")) +
-    A1AT_coef["His"] * log(check_range(His, "His")) +
-    A1AT_coef["HDL.TG"] * log(check_range(HDL.TG, "HDL.TG"))
+  log_AAT <- AAT_coef["intercept"] +
+    AAT_coef["GlycA"] * log(check_range(GlycA, "GlycA")) +
+    AAT_coef["FAw3"] * log(check_range(FAw3, "FAw3")) +
+    AAT_coef["VLDL.D"] * log(check_range(VLDL.D, "VLDL.D")) +
+    AAT_coef["HDL3.C"] * log(check_range(HDL3.C, "HDL3.C")) +
+    AAT_coef["LDL.D"] * log(check_range(LDL.D, "LDL.D")) +
+    AAT_coef["Phe"] * log(check_range(Phe, "Phe")) +
+    AAT_coef["Leu"] * log(check_range(Leu, "Leu")) +
+    AAT_coef["ApoB"] * log(check_range(ApoB, "ApoB")) +
+    AAT_coef["Alb"] * log(check_range(Alb, "Alb")) +
+    AAT_coef["Tyr"] * log(check_range(Tyr, "Tyr")) +
+    AAT_coef["bOHBut"] * log(check_range(bOHBut, "bOHBut")) +
+    AAT_coef["BMI"] * log(check_range(BMI, "BMI")) +
+    AAT_coef["Ala"] * log(check_range(Ala, "Ala")) +
+    AAT_coef["L.HDL.TG"] * log(check_range(L.HDL.TG, "L.HDL.TG")) +
+    AAT_coef["Ile"] * log(check_range(Ile, "Ile")) +
+    AAT_coef["Ace"] * log(check_range(Ace, "Ace")) +
+    AAT_coef["His"] * log(check_range(His, "His")) +
+    AAT_coef["HDL.TG"] * log(check_range(HDL.TG, "HDL.TG"))
 
   # Transform back to raw concentration units
-  A1AT <- exp(log_A1AT)
+  AAT <- exp(log_AAT)
 
   # Remove imputed concentrations that are outside the range of concentration
   # values observed in the model training data.
-  A1AT <- check_range(A1AT, "A1AT")
+  AAT <- check_range(AAT, "AAT")
 
-  message("Successfully imputed A1AT for ", sum(!is.na(A1AT)), " samples")
+  message("Successfully imputed AAT for ", sum(!is.na(AAT)), " samples")
 
-  return(A1AT)
+  return(AAT)
 }
 
 #' Impute Alpha-1-acid glcyoprotein (AGP)
