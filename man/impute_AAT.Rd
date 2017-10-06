@@ -5,7 +5,8 @@
 \title{Impute Alpha-1 antitrypsin (AAT)}
 \usage{
 impute_AAT(GlycA, FAw3, VLDL.D, HDL3.C, LDL.D, Phe, Leu, ApoB, Alb, Tyr, bOHBut,
-  BMI, Ala, L.HDL.TG, Ile, Ace, His, HDL.TG)
+  BMI, Ala, L.HDL.TG, Ile, Ace, His, HDL.TG, range_check = TRUE,
+  standardised = FALSE)
 }
 \arguments{
 \item{GlycA}{NMR measurement for glycoprotein acetyls. Measurements should
@@ -61,9 +62,18 @@ particles. Measurements should be between 0.000462--0.0933 mmol/L.}
 
 \item{HDL.TG}{NMR measurement for triglycerides within all HDL particles.
 Measurements should be between 0.0698--0.315 mmol/L.}
+
+\item{range_check}{logical; if \code{TRUE} discard measurements that
+are not in the accepted range of values (see Details). If \code{FALSE},
+no checking of input measurements or predicted concentrations will
+be performed.}
+
+\item{standardised}{logical; have measurements been standardised
+(\emph{i.e.} using the \code{scale} function.)}
 }
 \value{
-A vector of AAT measurements ranging between 0.64--2.58 mg/L.
+A vector of AAT measurements ranging between 0.64--2.58 mg/L or
+ measurements standardised to the population if \code{standardised = 'TRUE'}.
 }
 \description{
 Imputes the concentrations of AAT from serum NMR measurements in healthy
@@ -76,4 +86,9 @@ The imputation models will only return a concentration where no input
  range of values in the training dataset. Similarly, the imputed measurement
  will be set to missing if the imputation model returns a concentration
  outside the range of values that were found in the training dataset.
+
+ Standardised measurements may also be used by setting \code{standardised = 'TRUE'},
+ which is useful for cases where measurements must be adjusted for
+ technical effects. In this case, all NMR measurements and BMI should
+ be log transformed before scaling. Age and sex must also be standardised.
 }

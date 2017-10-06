@@ -5,19 +5,29 @@
 # data. Abnormal concentrations are set to NA, since the glycoprotein
 # concentrations could not/cannot be reliably imputed.
 #
+# Will also set 0 NMR values to the minim value in DILGOM
+#
 # @param measurement vector of measurements
 # @param name of the measurement
+# @param range_check should range checking be performed?
 #
 # @return the measurement vector where entries outside of the predefined range
 # are set to 'NA'.
-check_range <- function(measurement, name) {
+check_range <- function(measurement, name, range_check) {
+  # Set 0 values to DILGOM lower detection limits
+  if (!(name %in% c("Sex", "Age", "BMI"))) {
+    measurement[measurement == 0] <- measurement_ranges[name, "min_val"]
+  }
+
   before_n <- sum(!is.na(measurement))
   if (name == "Sex") {
     measurement[!(measurement %in% c(1L, 2L))] <- NA
   } else {
-    # measurement_ranges is an internal data structure
-    measurement[measurement < measurement_ranges[name, "min_val"]] <- NA
-    measurement[measurement > measurement_ranges[name, "max_val"]] <- NA
+    if (range_check) {
+      # measurement_ranges is an internal data structure
+      measurement[measurement < measurement_ranges[name, "min_val"]] <- NA
+      measurement[measurement > measurement_ranges[name, "max_val"]] <- NA
+    }
   }
   after_n <- sum(!is.na(measurement))
   filtered_n <- before_n - after_n

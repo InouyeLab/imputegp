@@ -6,7 +6,8 @@
 \usage{
 impute_HP(GlycA, LA, IDL.FC, SM, FAw3, HDL.TG, S.VLDL.CE, Age, Alb, Ile, Cit,
   VLDL.D, Leu, Val, L.VLDL.CE, Pyr, Lac, Gln, M.HDL.FC, XL.HDL.TG, XL.HDL.PL,
-  His, Tyr, BMI, L.HDL.TG, PUFA, S.LDL.FC)
+  His, Tyr, BMI, L.HDL.TG, PUFA, S.LDL.FC, range_check = TRUE,
+  standardised = FALSE)
 }
 \arguments{
 \item{GlycA}{NMR measurement for glycoprotein acetyls. Measurements should
@@ -89,9 +90,18 @@ should be between 2.29--6.62 mmol/L.}
 
 \item{S.LDL.FC}{NMR measurement for free cholesterol within small LDL
 particles. Measurements should be between 0.0215--0.133 mmol/L.}
+
+\item{range_check}{logical; if \code{TRUE} discard measurements that
+are not in the accepted range of values (see Details). If \code{FALSE},
+no checking of input measurements or predicted concentrations will
+be performed.}
+
+\item{standardised}{logical; have measurements been standardised
+(\emph{i.e.} using the \code{scale} function.)}
 }
 \value{
-A vector of HP measurements ranging between 0.14--3.95 mg/L.
+A vector of HP measurements ranging between 0.14--3.95 mg/L or
+ measurements standardised to the population if \code{standardised = 'TRUE'}.
 }
 \description{
 Imputes the concentrations ofHP from serum NMR measurements in healthy
@@ -104,4 +114,9 @@ The imputation models will only return a concentration where no input
  range of values in the training dataset. Similarly, the imputed measurement
  will be set to missing if the imputation model returns a concentration
  outside the range of values that were found in the training dataset.
+
+ Standardised measurements may also be used by setting \code{standardised = 'TRUE'},
+ which is useful for cases where measurements must be adjusted for
+ technical effects. In this case, all NMR measurements and BMI should
+ be log transformed before scaling. Age and sex must also be standardised.
 }

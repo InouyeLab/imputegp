@@ -6,7 +6,7 @@
 \usage{
 impute_AGP(GlycA, TotFA, IDL.FC, L.HDL.FC, His, HDL.TG, BMI, S.HDL.FC, S.LDL.TG,
   bOHBut, LA, S.HDL.CE, Lac, S.VLDL.TG, Ace, Cit, SFA, Ala, XXL.VLDL.CE, Glol,
-  Age, Crea, Gly)
+  Age, Crea, Gly, range_check = TRUE, standardised = FALSE)
 }
 \arguments{
 \item{GlycA}{NMR measurement for glycoprotein acetyls. Measurements should
@@ -78,9 +78,18 @@ between 25--74 years old.}
 
 \item{Gly}{NMR measurement for glycine. Measurements should be between
 0.182--0.632 mmol/L.}
+
+\item{range_check}{logical; if \code{TRUE} discard measurements that
+are not in the accepted range of values (see Details). If \code{FALSE},
+no checking of input measurements or predicted concentrations will
+be performed.}
+
+\item{standardised}{logical; have measurements been standardised
+(\emph{i.e.} using the \code{scale} function.)}
 }
 \value{
-A vector of AGP measurements ranging between 362--1,880 mg/L.
+A vector of AGP measurements ranging between 362--1,880 mg/L or
+ measurements standardised to the population if \code{standardised = 'TRUE'}.
 }
 \description{
 Imputes the concentrations of AGP from serum NMR measurements in healthy
@@ -93,4 +102,9 @@ The imputation models will only return a concentration where no input
  range of values in the training dataset. Similarly, the imputed measurement
  will be set to missing if the imputation model returns a concentration
  outside the range of values that were found in the training dataset.
+
+ Standardised measurements may also be used by setting \code{standardised = 'TRUE'},
+ which is useful for cases where measurements must be adjusted for
+ technical effects. In this case, all NMR measurements and BMI should
+ be log transformed before scaling. Age and sex must also be standardised.
 }
