@@ -6,7 +6,7 @@
 \usage{
 impute_AAT(GlycA, FAw3, VLDL.D, HDL3.C, LDL.D, Phe, Leu, ApoB, Alb, Tyr, bOHBut,
   BMI, Ala, L.HDL.TG, Ile, Ace, His, HDL.TG, range_check = TRUE,
-  standardised = FALSE)
+  standardised = FALSE, na.omit = TRUE)
 }
 \arguments{
 \item{GlycA}{NMR measurement for glycoprotein acetyls. Measurements should
@@ -70,6 +70,11 @@ be performed.}
 
 \item{standardised}{logical; have measurements been standardised
 (\emph{i.e.} using the \code{scale} function.)}
+
+\item{na.omit}{logical; should samples with missing values be omited?
+If \code{FALSE} missing values are set to the measurement's median
+in the model training dataset. Alternatively consider imputing
+missing values using \code{\link[impute]{impute.knn}}.}
 }
 \value{
 A vector of AAT measurements ranging between 0.64--2.58 mg/L or

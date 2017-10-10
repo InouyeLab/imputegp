@@ -7,7 +7,7 @@
 impute_HP(GlycA, LA, IDL.FC, SM, FAw3, HDL.TG, S.VLDL.CE, Age, Alb, Ile, Cit,
   VLDL.D, Leu, Val, L.VLDL.CE, Pyr, Lac, Gln, M.HDL.FC, XL.HDL.TG, XL.HDL.PL,
   His, Tyr, BMI, L.HDL.TG, PUFA, S.LDL.FC, range_check = TRUE,
-  standardised = FALSE)
+  standardised = FALSE, na.omit = TRUE)
 }
 \arguments{
 \item{GlycA}{NMR measurement for glycoprotein acetyls. Measurements should
@@ -98,6 +98,11 @@ be performed.}
 
 \item{standardised}{logical; have measurements been standardised
 (\emph{i.e.} using the \code{scale} function.)}
+
+\item{na.omit}{logical; should samples with missing values be omited?
+If \code{FALSE} missing values are set to the measurement's median
+in the model training dataset. Alternatively consider imputing
+missing values using \code{\link[impute]{impute.knn}}.}
 }
 \value{
 A vector of HP measurements ranging between 0.14--3.95 mg/L or

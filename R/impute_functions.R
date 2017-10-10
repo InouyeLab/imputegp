@@ -58,6 +58,10 @@
 #'  be performed.
 #' @param standardised logical; have measurements been standardised
 #'  (\emph{i.e.} using the \code{scale} function.)
+#' @param na.omit logical; should samples with missing values be omited?
+#'  If \code{FALSE} missing values are set to the measurement's median
+#'  in the model training dataset. Alternatively consider imputing
+#'  missing values using \code{\link[impute]{impute.knn}}.
 #'
 #' @return A vector of AAT measurements ranging between 0.64--2.58 mg/L or
 #'  measurements standardised to the population if \code{standardised = 'TRUE'}.
@@ -65,56 +69,57 @@
 #' @export
 impute_AAT <- function(
   GlycA, FAw3, VLDL.D, HDL3.C, LDL.D, Phe, Leu, ApoB, Alb, Tyr, bOHBut, BMI,
-  Ala, L.HDL.TG, Ile, Ace, His, HDL.TG, range_check=TRUE, standardised=FALSE
+  Ala, L.HDL.TG, Ile, Ace, His, HDL.TG, range_check=TRUE, standardised=FALSE,
+  na.omit=TRUE
 ) {
   if (standardised) {
     AAT <- AAT_coef["intercept", "standardised"] +
-      AAT_coef["GlycA", "standardised"] * GlycA +
-      AAT_coef["FAw3", "standardised"] * FAw3 +
-      AAT_coef["VLDL.D", "standardised"] * VLDL.D +
-      AAT_coef["HDL3.C", "standardised"] * HDL3.C +
-      AAT_coef["LDL.D", "standardised"] * LDL.D +
-      AAT_coef["Phe", "standardised"] * Phe +
-      AAT_coef["Leu", "standardised"] * Leu +
-      AAT_coef["ApoB", "standardised"] * ApoB +
-      AAT_coef["Alb", "standardised"] * Alb +
-      AAT_coef["Tyr", "standardised"] * Tyr +
-      AAT_coef["bOHBut", "standardised"] * bOHBut +
-      AAT_coef["BMI", "standardised"] * BMI +
-      AAT_coef["Ala", "standardised"] * Ala +
-      AAT_coef["L.HDL.TG", "standardised"] * L.HDL.TG +
-      AAT_coef["Ile", "standardised"] * Ile +
-      AAT_coef["Ace", "standardised"] * Ace +
-      AAT_coef["His", "standardised"] * His +
-      AAT_coef["HDL.TG", "standardised"] * HDL.TG
+      AAT_coef["GlycA", "standardised"] * handle_nas(GlycA, standardised=TRUE, na.omit=na.omit) +
+      AAT_coef["FAw3", "standardised"] * handle_nas(FAw3, standardised=TRUE, na.omit=na.omit) +
+      AAT_coef["VLDL.D", "standardised"] * handle_nas(VLDL.D, standardised=TRUE, na.omit=na.omit) +
+      AAT_coef["HDL3.C", "standardised"] * handle_nas(HDL3.C, standardised=TRUE, na.omit=na.omit) +
+      AAT_coef["LDL.D", "standardised"] * handle_nas(LDL.D, standardised=TRUE, na.omit=na.omit) +
+      AAT_coef["Phe", "standardised"] * handle_nas(Phe, standardised=TRUE, na.omit=na.omit) +
+      AAT_coef["Leu", "standardised"] * handle_nas(Leu, standardised=TRUE, na.omit=na.omit) +
+      AAT_coef["ApoB", "standardised"] * handle_nas(ApoB, standardised=TRUE, na.omit=na.omit) +
+      AAT_coef["Alb", "standardised"] * handle_nas(Alb, standardised=TRUE, na.omit=na.omit) +
+      AAT_coef["Tyr", "standardised"] * handle_nas(Tyr, standardised=TRUE, na.omit=na.omit) +
+      AAT_coef["bOHBut", "standardised"] * handle_nas(bOHBut, standardised=TRUE, na.omit=na.omit) +
+      AAT_coef["BMI", "standardised"] * handle_nas(BMI, standardised=TRUE, na.omit=na.omit) +
+      AAT_coef["Ala", "standardised"] * handle_nas(Ala, standardised=TRUE, na.omit=na.omit) +
+      AAT_coef["L.HDL.TG", "standardised"] * handle_nas(L.HDL.TG, standardised=TRUE, na.omit=na.omit) +
+      AAT_coef["Ile", "standardised"] * handle_nas(Ile, standardised=TRUE, na.omit=na.omit) +
+      AAT_coef["Ace", "standardised"] * handle_nas(Ace, standardised=TRUE, na.omit=na.omit) +
+      AAT_coef["His", "standardised"] * handle_nas(His, standardised=TRUE, na.omit=na.omit) +
+      AAT_coef["HDL.TG", "standardised"] * handle_nas(HDL.TG, standardised=TRUE, na.omit=na.omit)
     AAT <- scale(AAT)
   } else {
     log_AAT <- AAT_coef["intercept", "raw"] +
-      AAT_coef["GlycA", "raw"] * log(check_range(GlycA, "GlycA", range_check)) +
-      AAT_coef["FAw3", "raw"] * log(check_range(FAw3, "FAw3", range_check)) +
-      AAT_coef["VLDL.D", "raw"] * log(check_range(VLDL.D, "VLDL.D", range_check)) +
-      AAT_coef["HDL3.C", "raw"] * log(check_range(HDL3.C, "HDL3.C", range_check)) +
-      AAT_coef["LDL.D", "raw"] * log(check_range(LDL.D, "LDL.D", range_check)) +
-      AAT_coef["Phe", "raw"] * log(check_range(Phe, "Phe", range_check)) +
-      AAT_coef["Leu", "raw"] * log(check_range(Leu, "Leu", range_check)) +
-      AAT_coef["ApoB", "raw"] * log(check_range(ApoB, "ApoB", range_check)) +
-      AAT_coef["Alb", "raw"] * log(check_range(Alb, "Alb", range_check)) +
-      AAT_coef["Tyr", "raw"] * log(check_range(Tyr, "Tyr", range_check)) +
-      AAT_coef["bOHBut", "raw"] * log(check_range(bOHBut, "bOHBut", range_check)) +
-      AAT_coef["BMI", "raw"] * log(check_range(BMI, "BMI", range_check)) +
-      AAT_coef["Ala", "raw"] * log(check_range(Ala, "Ala", range_check)) +
-      AAT_coef["L.HDL.TG", "raw"] * log(check_range(L.HDL.TG, "L.HDL.TG", range_check)) +
-      AAT_coef["Ile", "raw"] * log(check_range(Ile, "Ile", range_check)) +
-      AAT_coef["Ace", "raw"] * log(check_range(Ace, "Ace", range_check)) +
-      AAT_coef["His", "raw"] * log(check_range(His, "His", range_check)) +
-      AAT_coef["HDL.TG", "raw"] * log(check_range(HDL.TG, "HDL.TG", range_check))
+      AAT_coef["GlycA", "raw"] * log(check_range(GlycA, "GlycA", range_check, na.omit)) +
+      AAT_coef["FAw3", "raw"] * log(check_range(FAw3, "FAw3", range_check, na.omit)) +
+      AAT_coef["VLDL.D", "raw"] * log(check_range(VLDL.D, "VLDL.D", range_check, na.omit)) +
+      AAT_coef["HDL3.C", "raw"] * log(check_range(HDL3.C, "HDL3.C", range_check, na.omit)) +
+      AAT_coef["LDL.D", "raw"] * log(check_range(LDL.D, "LDL.D", range_check, na.omit)) +
+      AAT_coef["Phe", "raw"] * log(check_range(Phe, "Phe", range_check, na.omit)) +
+      AAT_coef["Leu", "raw"] * log(check_range(Leu, "Leu", range_check, na.omit)) +
+      AAT_coef["ApoB", "raw"] * log(check_range(ApoB, "ApoB", range_check, na.omit)) +
+      AAT_coef["Alb", "raw"] * log(check_range(Alb, "Alb", range_check, na.omit)) +
+      AAT_coef["Tyr", "raw"] * log(check_range(Tyr, "Tyr", range_check, na.omit)) +
+      AAT_coef["bOHBut", "raw"] * log(check_range(bOHBut, "bOHBut", range_check, na.omit)) +
+      AAT_coef["BMI", "raw"] * log(check_range(BMI, "BMI", range_check, na.omit)) +
+      AAT_coef["Ala", "raw"] * log(check_range(Ala, "Ala", range_check, na.omit)) +
+      AAT_coef["L.HDL.TG", "raw"] * log(check_range(L.HDL.TG, "L.HDL.TG", range_check, na.omit)) +
+      AAT_coef["Ile", "raw"] * log(check_range(Ile, "Ile", range_check, na.omit)) +
+      AAT_coef["Ace", "raw"] * log(check_range(Ace, "Ace", range_check, na.omit)) +
+      AAT_coef["His", "raw"] * log(check_range(His, "His", range_check, na.omit)) +
+      AAT_coef["HDL.TG", "raw"] * log(check_range(HDL.TG, "HDL.TG", range_check, na.omit))
 
     # Transform back to raw concentration units
     AAT <- exp(log_AAT)
 
     # Remove imputed concentrations that are outside the range of concentration
     # values observed in the model training data.
-    AAT <- check_range(AAT, "AAT", range_check)
+    AAT <- check_range(AAT, "AAT", range_check, na.omit)
   }
 
   message("Successfully imputed AAT for ", sum(!is.na(AAT)), " samples")
@@ -193,6 +198,10 @@ impute_AAT <- function(
 #'  be performed.
 #' @param standardised logical; have measurements been standardised
 #'  (\emph{i.e.} using the \code{scale} function.)
+#' @param na.omit logical; should samples with missing values be omited?
+#'  If \code{FALSE} missing values are set to the measurement's median
+#'  in the model training dataset. Alternatively consider imputing
+#'  missing values using \code{\link[impute]{impute.knn}}.
 #'
 #' @return A vector of AGP measurements ranging between 362--1,880 mg/L or
 #'  measurements standardised to the population if \code{standardised = 'TRUE'}.
@@ -201,66 +210,66 @@ impute_AAT <- function(
 impute_AGP <- function(
   GlycA, TotFA, IDL.FC, L.HDL.FC, His, HDL.TG, BMI, S.HDL.FC, S.LDL.TG, bOHBut,
   LA, S.HDL.CE, Lac, S.VLDL.TG, Ace, Cit, SFA, Ala, XXL.VLDL.CE, Glol, Age,
-  Crea, Gly, range_check=TRUE, standardised=FALSE
+  Crea, Gly, range_check=TRUE, standardised=FALSE, na.omit=TRUE
 ) {
   if (standardised) {
     AGP <- AGP_coef["intercept", "standardised"] +
-      AGP_coef["GlycA", "standardised"] * GlycA +
-      AGP_coef["TotFA", "standardised"] * TotFA +
-      AGP_coef["IDL.FC", "standardised"] * IDL.FC +
-      AGP_coef["L.HDL.FC", "standardised"] * L.HDL.FC +
-      AGP_coef["His", "standardised"] * His +
-      AGP_coef["HDL.TG", "standardised"] * HDL.TG +
-      AGP_coef["BMI", "standardised"] * BMI +
-      AGP_coef["S.HDL.FC", "standardised"] * S.HDL.FC +
-      AGP_coef["S.LDL.TG", "standardised"] * S.LDL.TG +
-      AGP_coef["bOHBut", "standardised"] * bOHBut +
-      AGP_coef["LA", "standardised"] * LA +
-      AGP_coef["S.HDL.CE", "standardised"] * S.HDL.CE +
-      AGP_coef["Lac", "standardised"] * Lac +
-      AGP_coef["S.VLDL.TG", "standardised"] * S.VLDL.TG +
-      AGP_coef["Ace", "standardised"] * Ace +
-      AGP_coef["Cit", "standardised"] * Cit +
-      AGP_coef["SFA", "standardised"] * SFA +
-      AGP_coef["Ala", "standardised"] * Ala +
-      AGP_coef["XXL.VLDL.CE", "standardised"] * XXL.VLDL.CE +
-      AGP_coef["Glol", "standardised"] * Glol +
-      AGP_coef["Age", "standardised"] * Age +
-      AGP_coef["Crea", "standardised"] * Crea +
-      AGP_coef["Gly", "standardised"] * Gly
+      AGP_coef["GlycA", "standardised"] * handle_nas(GlycA, standardised=TRUE, na.omit=na.omit) +
+      AGP_coef["TotFA", "standardised"] * handle_nas(TotFA, standardised=TRUE, na.omit=na.omit) +
+      AGP_coef["IDL.FC", "standardised"] * handle_nas(IDL.FC, standardised=TRUE, na.omit=na.omit) +
+      AGP_coef["L.HDL.FC", "standardised"] * handle_nas(L.HDL.FC, standardised=TRUE, na.omit=na.omit) +
+      AGP_coef["His", "standardised"] * handle_nas(His, standardised=TRUE, na.omit=na.omit) +
+      AGP_coef["HDL.TG", "standardised"] * handle_nas(HDL.TG, standardised=TRUE, na.omit=na.omit)+
+      AGP_coef["BMI", "standardised"] * handle_nas(BMI, standardised=TRUE, na.omit=na.omit) +
+      AGP_coef["S.HDL.FC", "standardised"] * handle_nas(S.HDL.FC, standardised=TRUE, na.omit=na.omit) +
+      AGP_coef["S.LDL.TG", "standardised"] * handle_nas(S.LDL.TG, standardised=TRUE, na.omit=na.omit) +
+      AGP_coef["bOHBut", "standardised"] * handle_nas(bOHBut, standardised=TRUE, na.omit=na.omit) +
+      AGP_coef["LA", "standardised"] * handle_nas(LA, standardised=TRUE, na.omit=na.omit) +
+      AGP_coef["S.HDL.CE", "standardised"] * handle_nas(S.HDL.CE, standardised=TRUE, na.omit=na.omit) +
+      AGP_coef["Lac", "standardised"] * handle_nas(Lac, standardised=TRUE, na.omit=na.omit) +
+      AGP_coef["S.VLDL.TG", "standardised"] * handle_nas(S.VLDL.TG, standardised=TRUE, na.omit=na.omit) +
+      AGP_coef["Ace", "standardised"] * handle_nas(Ace, standardised=TRUE, na.omit=na.omit) +
+      AGP_coef["Cit", "standardised"] * handle_nas(Cit, standardised=TRUE, na.omit=na.omit) +
+      AGP_coef["SFA", "standardised"] * handle_nas(SFA, standardised=TRUE, na.omit=na.omit) +
+      AGP_coef["Ala", "standardised"] * handle_nas(Ala, standardised=TRUE, na.omit=na.omit) +
+      AGP_coef["XXL.VLDL.CE", "standardised"] * handle_nas(XXL.VLDL.CE, standardised=TRUE, na.omit=na.omit) +
+      AGP_coef["Glol", "standardised"] * handle_nas(Glol, standardised=TRUE, na.omit=na.omit) +
+      AGP_coef["Age", "standardised"] * handle_nas(Age, standardised=TRUE, na.omit=na.omit) +
+      AGP_coef["Crea", "standardised"] * handle_nas(Crea, standardised=TRUE, na.omit=na.omit) +
+      AGP_coef["Gly", "standardised"] * handle_nas(Gly, standardised=TRUE, na.omit=na.omit)
     AGP <- scale(AGP)
   } else {
     log_AGP <- AGP_coef["intercept", "raw"] +
-      AGP_coef["GlycA", "raw"] * log(check_range(GlycA, "GlycA", range_check)) +
-      AGP_coef["TotFA", "raw"] * log(check_range(TotFA, "TotFA", range_check)) +
-      AGP_coef["IDL.FC", "raw"] * log(check_range(IDL.FC, "IDL.FC", range_check)) +
-      AGP_coef["L.HDL.FC", "raw"] * log(check_range(L.HDL.FC, "L.HDL.FC", range_check)) +
-      AGP_coef["His", "raw"] * log(check_range(His, "His", range_check)) +
-      AGP_coef["HDL.TG", "raw"] * log(check_range(HDL.TG, "HDL.TG", range_check)) +
-      AGP_coef["BMI", "raw"] * log(check_range(BMI, "BMI", range_check)) +
-      AGP_coef["S.HDL.FC", "raw"] * log(check_range(S.HDL.FC, "S.HDL.FC", range_check)) +
-      AGP_coef["S.LDL.TG", "raw"] * log(check_range(S.LDL.TG, "S.LDL.TG", range_check)) +
-      AGP_coef["bOHBut", "raw"] * log(check_range(bOHBut, "bOHBut", range_check)) +
-      AGP_coef["LA", "raw"] * log(check_range(LA, "LA", range_check)) +
-      AGP_coef["S.HDL.CE", "raw"] * log(check_range(S.HDL.CE, "S.HDL.CE", range_check)) +
-      AGP_coef["Lac", "raw"] * log(check_range(Lac, "Lac", range_check)) +
-      AGP_coef["S.VLDL.TG", "raw"] * log(check_range(S.VLDL.TG, "S.VLDL.TG", range_check)) +
-      AGP_coef["Ace", "raw"] * log(check_range(Ace, "Ace", range_check)) +
-      AGP_coef["Cit", "raw"] * log(check_range(Cit, "Cit", range_check)) +
-      AGP_coef["SFA", "raw"] * log(check_range(SFA, "SFA", range_check)) +
-      AGP_coef["Ala", "raw"] * log(check_range(Ala, "Ala", range_check)) +
-      AGP_coef["XXL.VLDL.CE", "raw"] * log(check_range(XXL.VLDL.CE, "XXL.VLDL.CE", range_check)) +
-      AGP_coef["Glol", "raw"] * log(check_range(Glol, "Glol", range_check)) +
-      AGP_coef["Age", "raw"] * check_range(Age, "Age", range_check) +
-      AGP_coef["Crea", "raw"] * log(check_range(Crea, "Crea", range_check)) +
-      AGP_coef["Gly", "raw"] * log(check_range(Gly, "Gly", range_check))
+      AGP_coef["GlycA", "raw"] * log(check_range(GlycA, "GlycA", range_check, na.omit)) +
+      AGP_coef["TotFA", "raw"] * log(check_range(TotFA, "TotFA", range_check, na.omit)) +
+      AGP_coef["IDL.FC", "raw"] * log(check_range(IDL.FC, "IDL.FC", range_check, na.omit)) +
+      AGP_coef["L.HDL.FC", "raw"] * log(check_range(L.HDL.FC, "L.HDL.FC", range_check, na.omit)) +
+      AGP_coef["His", "raw"] * log(check_range(His, "His", range_check, na.omit)) +
+      AGP_coef["HDL.TG", "raw"] * log(check_range(HDL.TG, "HDL.TG", range_check, na.omit)) +
+      AGP_coef["BMI", "raw"] * log(check_range(BMI, "BMI", range_check, na.omit)) +
+      AGP_coef["S.HDL.FC", "raw"] * log(check_range(S.HDL.FC, "S.HDL.FC", range_check, na.omit)) +
+      AGP_coef["S.LDL.TG", "raw"] * log(check_range(S.LDL.TG, "S.LDL.TG", range_check, na.omit)) +
+      AGP_coef["bOHBut", "raw"] * log(check_range(bOHBut, "bOHBut", range_check, na.omit)) +
+      AGP_coef["LA", "raw"] * log(check_range(LA, "LA", range_check, na.omit)) +
+      AGP_coef["S.HDL.CE", "raw"] * log(check_range(S.HDL.CE, "S.HDL.CE", range_check, na.omit)) +
+      AGP_coef["Lac", "raw"] * log(check_range(Lac, "Lac", range_check, na.omit)) +
+      AGP_coef["S.VLDL.TG", "raw"] * log(check_range(S.VLDL.TG, "S.VLDL.TG", range_check, na.omit)) +
+      AGP_coef["Ace", "raw"] * log(check_range(Ace, "Ace", range_check, na.omit)) +
+      AGP_coef["Cit", "raw"] * log(check_range(Cit, "Cit", range_check, na.omit)) +
+      AGP_coef["SFA", "raw"] * log(check_range(SFA, "SFA", range_check, na.omit)) +
+      AGP_coef["Ala", "raw"] * log(check_range(Ala, "Ala", range_check, na.omit)) +
+      AGP_coef["XXL.VLDL.CE", "raw"] * log(check_range(XXL.VLDL.CE, "XXL.VLDL.CE", range_check, na.omit)) +
+      AGP_coef["Glol", "raw"] * log(check_range(Glol, "Glol", range_check, na.omit)) +
+      AGP_coef["Age", "raw"] * check_range(Age, "Age", range_check, na.omit) +
+      AGP_coef["Crea", "raw"] * log(check_range(Crea, "Crea", range_check, na.omit)) +
+      AGP_coef["Gly", "raw"] * log(check_range(Gly, "Gly", range_check, na.omit))
 
     # Transform back to raw concentration units
     AGP <- exp(log_AGP)
 
     # Remove imputed concentrations that are outside the range of concentration
     # values observed in the model training data.
-    AGP <- check_range(AGP, "AGP", range_check)
+    AGP <- check_range(AGP, "AGP", range_check, na.omit)
   }
 
   message("Successfully imputed AGP for ", sum(!is.na(AGP)), " samples")
@@ -346,6 +355,10 @@ impute_AGP <- function(
 #'  be performed.
 #' @param standardised logical; have measurements been standardised
 #'  (\emph{i.e.} using the \code{scale} function.)
+#' @param na.omit logical; should samples with missing values be omited?
+#'  If \code{FALSE} missing values are set to the measurement's median
+#'  in the model training dataset. Alternatively consider imputing
+#'  missing values using \code{\link[impute]{impute.knn}}.
 #'
 #' @return A vector of HP measurements ranging between 0.14--3.95 mg/L or
 #'  measurements standardised to the population if \code{standardised = 'TRUE'}.
@@ -354,74 +367,74 @@ impute_AGP <- function(
 impute_HP <- function(
   GlycA, LA, IDL.FC, SM, FAw3, HDL.TG, S.VLDL.CE, Age, Alb, Ile, Cit, VLDL.D,
   Leu, Val, L.VLDL.CE, Pyr, Lac, Gln, M.HDL.FC, XL.HDL.TG, XL.HDL.PL, His, Tyr,
-  BMI, L.HDL.TG, PUFA, S.LDL.FC, range_check=TRUE, standardised=FALSE
+  BMI, L.HDL.TG, PUFA, S.LDL.FC, range_check=TRUE, standardised=FALSE, na.omit=TRUE
 ) {
   if (standardised) {
     HP <- HP_coef["intercept", "standardised"] +
-      HP_coef["GlycA", "standardised"] * GlycA +
-      HP_coef["LA", "standardised"] * LA +
-      HP_coef["IDL.FC", "standardised"] * IDL.FC +
-      HP_coef["SM", "standardised"] * SM +
-      HP_coef["FAw3", "standardised"] * FAw3 +
-      HP_coef["HDL.TG", "standardised"] * HDL.TG +
-      HP_coef["S.VLDL.CE", "standardised"] * S.VLDL.CE +
-      HP_coef["Age", "standardised"] * Age +
-      HP_coef["Alb", "standardised"] * Alb +
-      HP_coef["Ile", "standardised"] * Ile +
-      HP_coef["Cit", "standardised"] * Cit +
-      HP_coef["VLDL.D", "standardised"] * VLDL.D +
-      HP_coef["Leu", "standardised"] * Leu +
-      HP_coef["Val", "standardised"] * Val +
-      HP_coef["L.VLDL.CE", "standardised"] * L.VLDL.CE +
-      HP_coef["Pyr", "standardised"] * Pyr +
-      HP_coef["Lac", "standardised"] * Lac +
-      HP_coef["Gln", "standardised"] * Gln +
-      HP_coef["M.HDL.FC", "standardised"] * M.HDL.FC +
-      HP_coef["XL.HDL.TG", "standardised"] * XL.HDL.TG +
-      HP_coef["XL.HDL.PL", "standardised"] * XL.HDL.PL +
-      HP_coef["His", "standardised"] * His +
-      HP_coef["Tyr", "standardised"] * Tyr +
-      HP_coef["BMI", "standardised"] * BMI +
-      HP_coef["L.HDL.TG", "standardised"] * L.HDL.TG +
-      HP_coef["PUFA", "standardised"] * PUFA +
-      HP_coef["S.LDL.FC", "standardised"] * S.LDL.FC
+      HP_coef["GlycA", "standardised"] * handle_nas(GlycA, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["LA", "standardised"] * handle_nas(LA, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["IDL.FC", "standardised"] * handle_nas(IDL.FC, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["SM", "standardised"] * handle_nas(SM, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["FAw3", "standardised"] * handle_nas(FAw3, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["HDL.TG", "standardised"] * handle_nas(HDL.TG, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["S.VLDL.CE", "standardised"] * handle_nas(S.VLDL.CE, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["Age", "standardised"] * handle_nas(Age, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["Alb", "standardised"] * handle_nas(Alb, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["Ile", "standardised"] * handle_nas(Ile, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["Cit", "standardised"] * handle_nas(Cit, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["VLDL.D", "standardised"] * handle_nas(VLDL.D, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["Leu", "standardised"] * handle_nas(Leu, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["Val", "standardised"] * handle_nas(Val, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["L.VLDL.CE", "standardised"] * handle_nas(L.VLDL.CE, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["Pyr", "standardised"] * handle_nas(Pyr, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["Lac", "standardised"] * handle_nas(Lac, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["Gln", "standardised"] * handle_nas(Gln, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["M.HDL.FC", "standardised"] * handle_nas(M.HDL.FC, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["XL.HDL.TG", "standardised"] * handle_nas(XL.HDL.TG, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["XL.HDL.PL", "standardised"] * handle_nas(XL.HDL.PL, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["His", "standardised"] * handle_nas(His, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["Tyr", "standardised"] * handle_nas(Tyr, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["BMI", "standardised"] * handle_nas(BMI, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["L.HDL.TG", "standardised"] * handle_nas(L.HDL.TG, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["PUFA", "standardised"] * handle_nas(PUFA, standardised=TRUE, na.omit=na.omit) +
+      HP_coef["S.LDL.FC", "standardised"] * handle_nas(S.LDL.FC, standardised=TRUE, na.omit=na.omit)
     HP <- scale(HP)
   } else {
     log_HP <- HP_coef["intercept", "raw"] +
-      HP_coef["GlycA", "raw"] * log(check_range(GlycA, "GlycA", range_check)) +
-      HP_coef["LA", "raw"] * log(check_range(LA, "LA", range_check)) +
-      HP_coef["IDL.FC", "raw"] * log(check_range(IDL.FC, "IDL.FC", range_check)) +
-      HP_coef["SM", "raw"] * log(check_range(SM, "SM", range_check)) +
-      HP_coef["FAw3", "raw"] * log(check_range(FAw3, "FAw3", range_check)) +
-      HP_coef["HDL.TG", "raw"] * log(check_range(HDL.TG, "HDL.TG", range_check)) +
-      HP_coef["S.VLDL.CE", "raw"] * log(check_range(S.VLDL.CE, "S.VLDL.CE", range_check)) +
-      HP_coef["Age", "raw"] * check_range(Age, "Age", range_check) +
-      HP_coef["Alb", "raw"] * log(check_range(Alb, "Alb", range_check)) +
-      HP_coef["Ile", "raw"] * log(check_range(Ile, "Ile", range_check)) +
-      HP_coef["Cit", "raw"] * log(check_range(Cit, "Cit", range_check)) +
-      HP_coef["VLDL.D", "raw"] * log(check_range(VLDL.D, "VLDL.D", range_check)) +
-      HP_coef["Leu", "raw"] * log(check_range(Leu, "Leu", range_check)) +
-      HP_coef["Val", "raw"] * log(check_range(Val, "Val", range_check)) +
-      HP_coef["L.VLDL.CE", "raw"] * log(check_range(L.VLDL.CE, "L.VLDL.CE", range_check)) +
-      HP_coef["Pyr", "raw"] * log(check_range(Pyr, "Pyr", range_check)) +
-      HP_coef["Lac", "raw"] * log(check_range(Lac, "Lac", range_check)) +
-      HP_coef["Gln", "raw"] * log(check_range(Gln, "Gln", range_check)) +
-      HP_coef["M.HDL.FC", "raw"] * log(check_range(M.HDL.FC, "M.HDL.FC", range_check)) +
-      HP_coef["XL.HDL.TG", "raw"] * log(check_range(XL.HDL.TG, "XL.HDL.TG", range_check)) +
-      HP_coef["XL.HDL.PL", "raw"] * log(check_range(XL.HDL.PL, "XL.HDL.PL", range_check)) +
-      HP_coef["His", "raw"] * log(check_range(His, "His", range_check)) +
-      HP_coef["Tyr", "raw"] * log(check_range(Tyr, "Tyr", range_check)) +
-      HP_coef["BMI", "raw"] * log(check_range(BMI, "BMI", range_check)) +
-      HP_coef["L.HDL.TG", "raw"] * log(check_range(L.HDL.TG, "L.HDL.TG", range_check)) +
-      HP_coef["PUFA", "raw"] * log(check_range(PUFA, "PUFA", range_check)) +
-      HP_coef["S.LDL.FC", "raw"] * log(check_range(S.LDL.FC, "S.LDL.FC", range_check))
+      HP_coef["GlycA", "raw"] * log(check_range(GlycA, "GlycA", range_check, na.omit)) +
+      HP_coef["LA", "raw"] * log(check_range(LA, "LA", range_check, na.omit)) +
+      HP_coef["IDL.FC", "raw"] * log(check_range(IDL.FC, "IDL.FC", range_check, na.omit)) +
+      HP_coef["SM", "raw"] * log(check_range(SM, "SM", range_check, na.omit)) +
+      HP_coef["FAw3", "raw"] * log(check_range(FAw3, "FAw3", range_check, na.omit)) +
+      HP_coef["HDL.TG", "raw"] * log(check_range(HDL.TG, "HDL.TG", range_check, na.omit)) +
+      HP_coef["S.VLDL.CE", "raw"] * log(check_range(S.VLDL.CE, "S.VLDL.CE", range_check, na.omit)) +
+      HP_coef["Age", "raw"] * check_range(Age, "Age", range_check, na.omit) +
+      HP_coef["Alb", "raw"] * log(check_range(Alb, "Alb", range_check, na.omit)) +
+      HP_coef["Ile", "raw"] * log(check_range(Ile, "Ile", range_check, na.omit)) +
+      HP_coef["Cit", "raw"] * log(check_range(Cit, "Cit", range_check, na.omit)) +
+      HP_coef["VLDL.D", "raw"] * log(check_range(VLDL.D, "VLDL.D", range_check, na.omit)) +
+      HP_coef["Leu", "raw"] * log(check_range(Leu, "Leu", range_check, na.omit)) +
+      HP_coef["Val", "raw"] * log(check_range(Val, "Val", range_check, na.omit)) +
+      HP_coef["L.VLDL.CE", "raw"] * log(check_range(L.VLDL.CE, "L.VLDL.CE", range_check, na.omit)) +
+      HP_coef["Pyr", "raw"] * log(check_range(Pyr, "Pyr", range_check, na.omit)) +
+      HP_coef["Lac", "raw"] * log(check_range(Lac, "Lac", range_check, na.omit)) +
+      HP_coef["Gln", "raw"] * log(check_range(Gln, "Gln", range_check, na.omit)) +
+      HP_coef["M.HDL.FC", "raw"] * log(check_range(M.HDL.FC, "M.HDL.FC", range_check, na.omit)) +
+      HP_coef["XL.HDL.TG", "raw"] * log(check_range(XL.HDL.TG, "XL.HDL.TG", range_check, na.omit)) +
+      HP_coef["XL.HDL.PL", "raw"] * log(check_range(XL.HDL.PL, "XL.HDL.PL", range_check, na.omit)) +
+      HP_coef["His", "raw"] * log(check_range(His, "His", range_check, na.omit)) +
+      HP_coef["Tyr", "raw"] * log(check_range(Tyr, "Tyr", range_check, na.omit)) +
+      HP_coef["BMI", "raw"] * log(check_range(BMI, "BMI", range_check, na.omit)) +
+      HP_coef["L.HDL.TG", "raw"] * log(check_range(L.HDL.TG, "L.HDL.TG", range_check, na.omit)) +
+      HP_coef["PUFA", "raw"] * log(check_range(PUFA, "PUFA", range_check, na.omit)) +
+      HP_coef["S.LDL.FC", "raw"] * log(check_range(S.LDL.FC, "S.LDL.FC", range_check, na.omit))
 
     # Transform back to raw concentration units
     HP <- exp(log_HP)
 
     # Remove imputed concentrations that are outside the range of concentration
     # values observed in the model training data.
-    HP <- check_range(HP, "HP", range_check)
+    HP <- check_range(HP, "HP", range_check, na.omit)
   }
 
   message("Successfully imputed HP for ", sum(!is.na(HP)), " samples")
@@ -471,43 +484,47 @@ impute_HP <- function(
 #'  be performed.
 #' @param standardised logical; have measurements been standardised
 #'  (\emph{i.e.} using the \code{scale} function.)
+#' @param na.omit logical; should samples with missing values be omited?
+#'  If \code{FALSE} missing values are set to the measurement's median
+#'  in the model training dataset. Alternatively consider imputing
+#'  missing values using \code{\link[impute]{impute.knn}}.
 #'
 #' @return A vector of TF measurements ranging between 1.39--4.38 mg/L or
 #'  measurements standardised to the population if \code{standardised = 'TRUE'}.
 #'
 impute_TF <- function(GlycA, Sex, Age, S.HDL.FC, Ace, Ala, SFA, His, Gln,
-                      range_check=TRUE, standardised=FALSE) {
+                      range_check=TRUE, standardised=FALSE, na.omit=TRUE) {
 
   if (standardised) {
     TF <- TF_coef["intercept", "standardised"] +
-      TF_coef["GlycA", "standardised"] * GlycA +
-      TF_coef["Sex", "standardised"] * Sex +
-      TF_coef["Age", "standardised"] * Age +
-      TF_coef["S.HDL.FC", "standardised"] * S.HDL.FC +
-      TF_coef["Ace", "standardised"] * Ace +
-      TF_coef["Ala", "standardised"] * Ala +
-      TF_coef["SFA", "standardised"] * SFA +
-      TF_coef["His", "standardised"] * His +
-      TF_coef["Gln", "standardised"] * Gln
+      TF_coef["GlycA", "standardised"] * handle_nas(GlycA, standardised=TRUE, na.omit=na.omit) +
+      TF_coef["Sex", "standardised"] * handle_nas(Sex, standardised=TRUE, na.omit=na.omit) +
+      TF_coef["Age", "standardised"] * handle_nas(Age, standardised=TRUE, na.omit=na.omit) +
+      TF_coef["S.HDL.FC", "standardised"] * handle_nas(S.HDL.FC, standardised=TRUE, na.omit=na.omit) +
+      TF_coef["Ace", "standardised"] * handle_nas(Ace, standardised=TRUE, na.omit=na.omit) +
+      TF_coef["Ala", "standardised"] * handle_nas(Ala, standardised=TRUE, na.omit=na.omit) +
+      TF_coef["SFA", "standardised"] * handle_nas(SFA, standardised=TRUE, na.omit=na.omit) +
+      TF_coef["His", "standardised"] * handle_nas(His, standardised=TRUE, na.omit=na.omit) +
+      TF_coef["Gln", "standardised"] * handle_nas(Gln, standardised=TRUE, na.omit=na.omit)
     TF <- scale(TF)
   } else {
     log_TF <- TF_coef["intercept", "raw"] +
-      TF_coef["GlycA", "raw"] * log(check_range(GlycA, "GlycA", range_check)) +
-      TF_coef["Sex", "raw"] * check_range(Sex, "Sex", range_check) +
-      TF_coef["Age", "raw"] * check_range(Age, "Age", range_check) +
-      TF_coef["S.HDL.FC", "raw"] * log(check_range(S.HDL.FC, "S.HDL.FC", range_check)) +
-      TF_coef["Ace", "raw"] * log(check_range(Ace, "Ace", range_check)) +
-      TF_coef["Ala", "raw"] * log(check_range(Ala, "Ala", range_check)) +
-      TF_coef["SFA", "raw"] * log(check_range(SFA, "SFA", range_check)) +
-      TF_coef["His", "raw"] * log(check_range(His, "His", range_check)) +
-      TF_coef["Gln", "raw"] * log(check_range(Gln, "Gln", range_check))
+      TF_coef["GlycA", "raw"] * log(check_range(GlycA, "GlycA", range_check, na.omit)) +
+      TF_coef["Sex", "raw"] * check_range(Sex, "Sex", range_check, na.omit) +
+      TF_coef["Age", "raw"] * check_range(Age, "Age", range_check, na.omit) +
+      TF_coef["S.HDL.FC", "raw"] * log(check_range(S.HDL.FC, "S.HDL.FC", range_check, na.omit)) +
+      TF_coef["Ace", "raw"] * log(check_range(Ace, "Ace", range_check, na.omit)) +
+      TF_coef["Ala", "raw"] * log(check_range(Ala, "Ala", range_check, na.omit)) +
+      TF_coef["SFA", "raw"] * log(check_range(SFA, "SFA", range_check, na.omit)) +
+      TF_coef["His", "raw"] * log(check_range(His, "His", range_check, na.omit)) +
+      TF_coef["Gln", "raw"] * log(check_range(Gln, "Gln", range_check, na.omit))
 
     # Transform back to raw concentration units
     TF <- exp(log_TF)
 
     # Remove imputed concentrations that are outside the range of concentration
     # values observed in the model training data.
-    TF <- check_range(TF, "TF", range_check)
+    TF <- check_range(TF, "TF", range_check, na.omit)
   }
 
   message("Successfully imputed TF for ", sum(!is.na(TF)), " samples")

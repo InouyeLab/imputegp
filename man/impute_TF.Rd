@@ -5,7 +5,7 @@
 \title{Impute Transferrin (TF)}
 \usage{
 impute_TF(GlycA, Sex, Age, S.HDL.FC, Ace, Ala, SFA, His, Gln,
-  range_check = TRUE, standardised = FALSE)
+  range_check = TRUE, standardised = FALSE, na.omit = TRUE)
 }
 \arguments{
 \item{GlycA}{NMR measurement for glycoprotein acetyls. Measurements should
@@ -42,6 +42,11 @@ be performed.}
 
 \item{standardised}{logical; have measurements been standardised
 (\emph{i.e.} using the \code{scale} function.)}
+
+\item{na.omit}{logical; should samples with missing values be omited?
+If \code{FALSE} missing values are set to the measurement's median
+in the model training dataset. Alternatively consider imputing
+missing values using \code{\link[impute]{impute.knn}}.}
 }
 \value{
 A vector of TF measurements ranging between 1.39--4.38 mg/L or

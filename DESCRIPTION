@@ -1,7 +1,7 @@
 Package: imputegp
 Type: Package
 Title: Impute GlycA glycoproteins from serum NMR data in population studies
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: 'Scott Ritchie <sritchie73@gmail.com> [aut, cre]'
 Description: Functions for imputing the concentrations of alpha-1-acid
     glycoprotein, haptoglobin, alpha-1 antitrypsin, and transferrin from
@@ -9,5 +9,7 @@ Description: Functions for imputing the concentrations of alpha-1-acid
     cohorts.
 Depends:
   R (>= 2.10)
+Suggests:
+  impute
 License: GPL-2
 RoxygenNote: 6.0.1

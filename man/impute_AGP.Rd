@@ -6,7 +6,8 @@
 \usage{
 impute_AGP(GlycA, TotFA, IDL.FC, L.HDL.FC, His, HDL.TG, BMI, S.HDL.FC, S.LDL.TG,
   bOHBut, LA, S.HDL.CE, Lac, S.VLDL.TG, Ace, Cit, SFA, Ala, XXL.VLDL.CE, Glol,
-  Age, Crea, Gly, range_check = TRUE, standardised = FALSE)
+  Age, Crea, Gly, range_check = TRUE, standardised = FALSE,
+  na.omit = TRUE)
 }
 \arguments{
 \item{GlycA}{NMR measurement for glycoprotein acetyls. Measurements should
@@ -86,6 +87,11 @@ be performed.}
 
 \item{standardised}{logical; have measurements been standardised
 (\emph{i.e.} using the \code{scale} function.)}
+
+\item{na.omit}{logical; should samples with missing values be omited?
+If \code{FALSE} missing values are set to the measurement's median
+in the model training dataset. Alternatively consider imputing
+missing values using \code{\link[impute]{impute.knn}}.}
 }
 \value{
 A vector of AGP measurements ranging between 362--1,880 mg/L or

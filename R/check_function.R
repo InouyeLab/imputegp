@@ -10,13 +10,19 @@
 # @param measurement vector of measurements
 # @param name of the measurement
 # @param range_check should range checking be performed?
+# @param na.omit should samples with missing values be excluded or should
+#   missing values be imputed as the model training dataset median?
 #
 # @return the measurement vector where entries outside of the predefined range
 # are set to 'NA'.
-check_range <- function(measurement, name, range_check) {
+check_range <- function(measurement, name, range_check, na.omit) {
   # Set 0 values to DILGOM lower detection limits
   if (!(name %in% c("Sex", "Age", "BMI"))) {
     measurement[measurement == 0] <- measurement_ranges[name, "min_val"]
+  }
+
+  if (!na.omit) {
+    measurement[is.na(measurement)] <- measurement_ranges[name, "median_val"]
   }
 
   before_n <- sum(!is.na(measurement))
@@ -47,6 +53,28 @@ check_range <- function(measurement, name, range_check) {
   }
   return(measurement)
 }
+
+# Handle missing measurements
+#
+# @param values vector of measurement values
+# @param name name of the measurement
+# @param standardised logical; has the measurement been standardised?
+# @param na.omit logical; should NAs be kept as NA or imputed to the
+#   model training dataset median?
+#
+# @return a vector of values
+handle_nas <- function(values, name, standardised, na.omit) {
+  if (na.omit) {
+    return(values)
+  } else {
+    if (standardised) {
+      values[is.na(values)] <- 0
+    } else {
+      values[is.na(values)] <- measurement_ranges[name, "median_val"]
+    }
+  }
+}
+
 
 
 
