@@ -92,7 +92,7 @@ impute_AAT <- function(
       AAT_coef["Ace", "standardised"] * handle_nas(Ace, standardised=TRUE, na.omit=na.omit) +
       AAT_coef["His", "standardised"] * handle_nas(His, standardised=TRUE, na.omit=na.omit) +
       AAT_coef["HDL.TG", "standardised"] * handle_nas(HDL.TG, standardised=TRUE, na.omit=na.omit)
-    AAT <- scale(AAT)
+    AAT <- as.vector(scale(AAT))
   } else {
     log_AAT <- AAT_coef["intercept", "raw"] +
       AAT_coef["GlycA", "raw"] * log(check_range(GlycA, "GlycA", range_check, na.omit)) +
@@ -237,7 +237,7 @@ impute_AGP <- function(
       AGP_coef["Age", "standardised"] * handle_nas(Age, standardised=TRUE, na.omit=na.omit) +
       AGP_coef["Crea", "standardised"] * handle_nas(Crea, standardised=TRUE, na.omit=na.omit) +
       AGP_coef["Gly", "standardised"] * handle_nas(Gly, standardised=TRUE, na.omit=na.omit)
-    AGP <- scale(AGP)
+    AGP <- as.vector(scale(AGP))
   } else {
     log_AGP <- AGP_coef["intercept", "raw"] +
       AGP_coef["GlycA", "raw"] * log(check_range(GlycA, "GlycA", range_check, na.omit)) +
@@ -398,7 +398,7 @@ impute_HP <- function(
       HP_coef["L.HDL.TG", "standardised"] * handle_nas(L.HDL.TG, standardised=TRUE, na.omit=na.omit) +
       HP_coef["PUFA", "standardised"] * handle_nas(PUFA, standardised=TRUE, na.omit=na.omit) +
       HP_coef["S.LDL.FC", "standardised"] * handle_nas(S.LDL.FC, standardised=TRUE, na.omit=na.omit)
-    HP <- scale(HP)
+    HP <- as.vector(scale(HP))
   } else {
     log_HP <- HP_coef["intercept", "raw"] +
       HP_coef["GlycA", "raw"] * log(check_range(GlycA, "GlycA", range_check, na.omit)) +
@@ -506,7 +506,7 @@ impute_TF <- function(GlycA, Sex, Age, S.HDL.FC, Ace, Ala, SFA, His, Gln,
       TF_coef["SFA", "standardised"] * handle_nas(SFA, standardised=TRUE, na.omit=na.omit) +
       TF_coef["His", "standardised"] * handle_nas(His, standardised=TRUE, na.omit=na.omit) +
       TF_coef["Gln", "standardised"] * handle_nas(Gln, standardised=TRUE, na.omit=na.omit)
-    TF <- scale(TF)
+    TF <- as.vector(scale(TF))
   } else {
     log_TF <- TF_coef["intercept", "raw"] +
       TF_coef["GlycA", "raw"] * log(check_range(GlycA, "GlycA", range_check, na.omit)) +

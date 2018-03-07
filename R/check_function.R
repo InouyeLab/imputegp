@@ -64,15 +64,15 @@ check_range <- function(measurement, name, range_check, na.omit) {
 #
 # @return a vector of values
 handle_nas <- function(values, name, standardised, na.omit) {
-  if (na.omit) {
-    return(values)
-  } else {
+  if (!na.omit) {
     if (standardised) {
       values[is.na(values)] <- 0
+      values <- as.vector(values) # strip attribute information so it doesnt screw up downstream vectorisation
     } else {
       values[is.na(values)] <- measurement_ranges[name, "median_val"]
     }
   }
+  return(values)
 }
 
 
